@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@module-federation/nextjs-mf": "^8.8.56",
+    "@module-federation/runtime": "^2.0.1",
     "next": "15.5.12",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
