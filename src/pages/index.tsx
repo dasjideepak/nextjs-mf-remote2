@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 import { createStandaloneSharedStateFallback } from "@/state/standaloneSharedState";
-import { AppErrorBoundary } from "@dasjideepak/mf-shared-ui/AppErrorBoundary";
+import { AppErrorBoundary } from "@dasjideepak/mf-shared-ui";
 
 const DashboardShell = dynamic(() => import("@/components/DashboardShell"), {
   ssr: false,
@@ -10,7 +10,7 @@ const DashboardShell = dynamic(() => import("@/components/DashboardShell"), {
     </div>
   ),
 });
-xw
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-slate-50">
