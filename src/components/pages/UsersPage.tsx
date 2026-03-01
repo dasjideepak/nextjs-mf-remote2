@@ -1,4 +1,4 @@
-import { Table } from "@dasjideepak/mf-shared-ui";
+import { Table, SectionHeader } from "@dasjideepak/mf-shared-ui";
 import type { DummyUser } from "@/hooks/useUsers";
 
 interface UsersPageProps {
@@ -19,12 +19,10 @@ export function UsersPage({ users, usersLoading }: UsersPageProps) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-gray-900">User Management</h2>
-        <p className="mt-1 text-sm text-gray-500">
-          Full list of platform users fetched inside remote2.
-        </p>
-      </div>
+      <SectionHeader
+        title="User Management"
+        description="Full list of platform users fetched inside remote2."
+      />
       <Table
         columns={[
           { key: "id", header: "ID" },

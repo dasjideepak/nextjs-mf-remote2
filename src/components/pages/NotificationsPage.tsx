@@ -1,108 +1,42 @@
-import { Button, Card, Badge, NOTIF_COLORS } from "@dasjideepak/mf-shared-ui";
-import type { SharedDashboardState } from "@dasjideepak/mf-shared-ui";
-import { X } from "lucide-react";
+import { NotificationCenter, SectionHeader } from "@dasjideepak/mf-shared-ui";
+import type { DashboardSharedState } from "@/types/hostGlobalState";
 
 interface NotificationsPageProps {
-  sharedState: SharedDashboardState;
+  sharedState: DashboardSharedState;
 }
 
 export function NotificationsPage({ sharedState }: NotificationsPageProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-gray-900">Notifications</h2>
-          <p className="mt-1 text-sm text-gray-500">
-            Shared across all remotes. Add one here, see it in Customer App too.
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button
-            size="sm"
-            onClick={() =>
-              sharedState.addNotification(
-                "New admin policy update published",
-                "warning"
-              )
-            }
-          >
-            + Warning
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() =>
-              sharedState.addNotification(
-                "System backup completed successfully",
-                "success"
-              )
-            }
-          >
-            + Success
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() =>
-              sharedState.addNotification(
-                "Critical: database connection timeout",
-                "error"
-              )
-            }
-          >
-            + Error
-          </Button>
-        </div>
+        <SectionHeader
+          title="Notifications"
+          description="Shared across all remotes. Add one here, see it in Customer App too."
+        />
       </div>
-
-      {sharedState.notifications.length > 0 && (
-        <div className="flex justify-end">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={sharedState.clearNotifications}
-          >
-            Clear all
-          </Button>
-        </div>
-      )}
-
-      {sharedState.notifications.length === 0 ? (
-        <Card>
-          <p className="py-6 text-center text-sm text-gray-400">
-            No notifications yet. Add one from any remote.
-          </p>
-        </Card>
-      ) : (
-        <div className="space-y-2">
-          {sharedState.notifications.map((n) => {
-            const color = NOTIF_COLORS[n.type];
-            return (
-              <div
-                key={n.id}
-                className={`flex items-start gap-3 rounded-lg border ${color.border} ${color.bg} p-4`}
-              >
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <Badge variant={color.badge}>{n.type}</Badge>
-                    <span className="text-xs text-gray-500">
-                      {new Date(n.timestamp).toLocaleTimeString()}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-sm text-gray-800">{n.message}</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => sharedState.dismissNotification(n.id)}
-                  className="shrink-0 rounded p-1 text-gray-400 transition hover:bg-white/60 hover:text-gray-600"
-                >
-                  <X className="h-4 w-4" aria-hidden="true" />
-                </button>
-              </div>
-            );
-          })}
-        </div>
-      )}
+      <NotificationCenter
+        state={sharedState}
+        actions={[
+          {
+            label: "+ Warning",
+            message: "New admin policy update published",
+            type: "warning",
+          },
+          {
+            label: "+ Success",
+            message: "System backup completed successfully",
+            type: "success",
+            variant: "secondary",
+          },
+          {
+            label: "+ Error",
+            message: "Critical: database connection timeout",
+            type: "error",
+            variant: "danger",
+          },
+        ]}
+        emptyMessage="No notifications yet. Add one from any remote."
+      />
     </div>
   );
 }

@@ -1,14 +1,12 @@
-import { Card } from "@dasjideepak/mf-shared-ui";
+import { Card, SectionHeader } from "@dasjideepak/mf-shared-ui";
 
 export function ProfilePage() {
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-gray-900">Admin Profile</h2>
-        <p className="mt-1 text-sm text-gray-500">
-          Owned by remote2, routed internally.
-        </p>
-      </div>
+      <SectionHeader
+        title="Admin Profile"
+        description="Owned by remote2, routed internally."
+      />
 
       <Card>
         <div className="flex items-center gap-4">

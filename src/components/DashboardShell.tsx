@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/compat/router";
 import { useSharedGlobalState } from "@/hooks/globalState";
 import { useUsers } from "@/hooks/useUsers";
-import type { SharedDashboardState } from "@dasjideepak/mf-shared-ui";
+import type { DashboardSharedState } from "@/types/hostGlobalState";
 import {
   OverviewPage,
   UsersPage,
@@ -11,7 +12,7 @@ import {
 import { DashboardShellLayout } from "@/components/DashboardShellLayout";
 
 interface DashboardShellProps {
-  sharedState?: SharedDashboardState;
+  sharedState?: DashboardSharedState;
 }
 
 const BASE_PATH = "/dashboard";
@@ -32,26 +33,34 @@ function getSegmentFromPath(pathname: string): string {
 }
 
 export default function DashboardShell({ sharedState }: DashboardShellProps) {
+  const router = useRouter();
   const { isLoading, state } = useSharedGlobalState();
-  const resolvedState =
-    sharedState ?? (state as SharedDashboardState | undefined);
-  const [routeSegment, setRouteSegment] = useState<string>("");
+  const resolvedState: DashboardSharedState | undefined = sharedState ?? state;
+  const [fallbackPathname, setFallbackPathname] = useState("");
+  const routeSegment = getSegmentFromPath(
+    router ? (router.asPath ?? "").split(/[?#]/)[0] ?? "" : fallbackPathname
+  );
   const { users, loading: usersLoading } = useUsers(30);
 
   useEffect(() => {
+    if (router) return;
     if (typeof window === "undefined") return;
-    const sync = () =>
-      setRouteSegment(getSegmentFromPath(window.location.pathname));
+
+    const sync = () => setFallbackPathname(window.location.pathname);
     sync();
     window.addEventListener("popstate", sync);
     return () => window.removeEventListener("popstate", sync);
-  }, []);
+  }, [router]);
 
   const navigate = (segment: RouteSegment) => {
-    if (typeof window === "undefined") return;
     const path = segment ? `${BASE_PATH}/${segment}` : BASE_PATH;
+    if (router) {
+      void router.push(path);
+      return;
+    }
+    if (typeof window === "undefined") return;
     window.history.pushState({}, "", path);
-    setRouteSegment(segment);
+    setFallbackPathname(path);
   };
 
   if (isLoading && !sharedState) {
@@ -80,7 +89,7 @@ export default function DashboardShell({ sharedState }: DashboardShellProps) {
       routeSegment={routeSegment}
       notificationsCount={resolvedState.notifications.length}
       onNavigate={(segment) => navigate(segment as RouteSegment)}
-      theme={{
+      appearance={{
         sidebarIntroClassName: "border-emerald-200 bg-emerald-50/70",
         activeItemClassName: "bg-emerald-100 text-emerald-800",
         mobileActiveItemClassName: "border-emerald-600 text-emerald-600",
